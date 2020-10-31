@@ -1,0 +1,59 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}ETF Predict{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">ETF Predict</a>
+        </div>    
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                {{ wtf.quick_form(form) }}
+                {% if name %}
+                    <h1>{{ name }}</h1>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if name %}
+            <h1>Predicted Prices 30 Day Horizon</h1>
+        {% else %}
+            <h1>Top 25 Micro Cap ETF</h1>
+        {% endif %}
+        <table class="table table-hover">
+            {% if name %}
+                <thead> 
+                    <tr>
+                        <th> CLOSE DATE</th>
+                        <th> PREDICTED CLOSE PRICE($)</th>
+                    </tr>
+                </thead>
+            {% else %}
+                <thead> 
+                    <tr>
+                        <th> ETF Symbol</th>
+                        <th> ETF Name</th>
+                    </tr>
+                </thead>
+            {% endif %}
+            
+            <tbody>
+                {% for key in data %}
+                    <tr>
+                        <th> {{ key }} </th>
+                        <td> {{ data[key] }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+{% endblock %}
