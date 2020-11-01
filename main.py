@@ -13,7 +13,7 @@ bootstrap = Bootstrap(app)
 
 
 class NameForm(FlaskForm):
-    name = StringField('Which STK would you like to predict? \n Enter symbol from the list below.', validators=[Required(),
+    name = StringField('Which ETF would you like to predict? \n Enter ticker from the list below.', validators=[Required(),
                                                          Length(1, 4)])
     submit = SubmitField('Submit')
 
