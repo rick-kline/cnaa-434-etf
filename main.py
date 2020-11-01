@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, Length
 from google.cloud import bigquery
+from google.oauth2 import service_account
 
 
 app = Flask(__name__)
@@ -26,7 +27,7 @@ def index():
     etf_sym_nm_query="""
     select etf_symbol
             , etf_name
-    from cnaa-434.etf_dataset.top_micro_cap_etf
+    from etf_dataset.top_micro_cap_etf
     order by etf_symbol
     """
     etf_sym_nm = client.query(etf_sym_nm_query).to_dataframe()
@@ -35,11 +36,10 @@ def index():
     if form.validate_on_submit():
         name = form.name.data
         form.name.data = ''
-        client = bigquery.Client()
         fcst_query = """
         SELECT SUBSTR(CAST(forecast_timestamp AS STRING), 1,10) AS forecast_date
                 , ROUND(forecast_value,2) AS forecast_value
-        FROM ML.FORECAST(MODEL `cnaa-434.etf_models.etf_price_forecast`, 
+        FROM ML.FORECAST(MODEL `etf_models.etf_price_forecast`, 
                  STRUCT(30 AS horizon, 0.9 AS confidence_level))
         WHERE etf_symbol = '""" + name + """'
         ORDER By forecast_timestamp
