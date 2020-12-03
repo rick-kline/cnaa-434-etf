@@ -1,0 +1,8 @@
+requests
+google-cloud
+google-cloud-pubsub
+google-cloud-storage
+google-cloud-bigquery
+Flask
+google-cloud-bigquery-datatransfer
+google-cloud-core

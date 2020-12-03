@@ -1,4 +1,45 @@
 steps:
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
-timeout: "1600s"
+  
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+    'functions', 'deploy', 'ingest_etf_UR5VVLvlU1V75vqy4XJFBPFTK8YFJl84',
+    '--trigger-http',
+    '--entry-point', 'ingest_etf',
+    '--runtime', 'python37',
+    '--region', 'us-central1',
+    '--source', 'ingest_etf'    
+  ]
+  waitFor: ['-']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+    'functions', 'deploy', 'publish',
+    '--trigger-http',
+    '--runtime', 'python37',
+    '--region', 'us-central1',
+    '--source', 'publish'    
+  ]
+  waitFor: ['-']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+    'functions', 'deploy', 'gcs_gbq_load',
+    '--trigger-topic', 'load_etf_dataset',
+    '--runtime', 'python37',
+    '--region', 'us-central1',
+    '--source', 'gcs_gbq_load'    
+  ]
+  waitFor: ['-']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+    'functions', 'deploy', 'build_etf_model',
+    '--trigger-topic', 'build_etf_model',
+    '--runtime', 'python37',
+    '--region', 'us-central1',
+    '--source', 'build_etf_model'    
+  ]
+  waitFor: ['-']
+  
