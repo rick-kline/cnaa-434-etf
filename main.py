@@ -2,10 +2,9 @@ from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
-from wtforms.validators import Required, Length
+from wtforms.validators import DataRequired, Length
 from google.cloud import bigquery
 from google.oauth2 import service_account
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'etf secret!'
@@ -13,8 +12,7 @@ bootstrap = Bootstrap(app)
 
 
 class NameForm(FlaskForm):
-    name = StringField('Which ETF would you like to predict? \n Enter ticker from the list below.', validators=[Required(),
-                                                         Length(1, 4)])
+    name = StringField('Which ETF would you like to predict? \n Enter ticker from the list below.', [DataRequired(), Length(max=4)])
     submit = SubmitField('Submit')
 
 
