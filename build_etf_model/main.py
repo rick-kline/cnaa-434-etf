@@ -6,9 +6,20 @@ from google.cloud import bigquery
 import pandas as pd
 import google.auth
 import json
+import base64
+import logging
+from google.cloud import pubsub_v1
 
 # Triggered from a message on a Cloud Pub/Sub topic.
 def build_etf_model(event, context):
+    # consume and manipulate data from Pub/Sub message
+    if 'data' in event:
+        name = base64.b64decode(event['data']).decode('utf-8')
+        name_dict = json.loads(name)
+
+        project = name_dict.get('data').get('project')
+        region = name_dict.get('data').get('region')
+
     # Set dates for data
     now = datetime.now(timezone('US/Eastern'))
     roll_one_yr = relativedelta(days=-365)
@@ -33,7 +44,7 @@ def build_etf_model(event, context):
     
     # Build model
     train_query = """
-    CREATE OR REPLACE MODEL etf_models.etf_price_forecast
+    CREATE OR REPLACE MODEL """ + "`"+ project + "`"+ """.etf_models.etf_price_forecast
     OPTIONS(model_type='ARIMA',
             time_series_data_col='close_trade_price',
             time_series_timestamp_col='close_date',
@@ -41,7 +52,7 @@ def build_etf_model(event, context):
     SELECT etf_symbol
             , CAST(close_date AS TIMESTAMP) AS close_date
         , close_trade_price
-    FROM  `cnaa-434`.etf_dataset.etf_ytd_daily_summary
+    FROM  """ + "`"+ project + "`"+ """.etf_dataset.etf_ytd_daily_summary
     WHERE close_date BETWEEN """ + "'" + train_strt_str + "'" + """ AND """ + "'" + train_end_str +"'" +"""
     ORDER BY close_date """
 

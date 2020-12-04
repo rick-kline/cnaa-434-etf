@@ -12,8 +12,6 @@ google-cloud-core==1.4.3
 google-cloud-pubsub==2.1.0
 google-cloud-storage==1.31.2
 google-crc32c==1.0.0
-google-images-download==2.8.0
-google-resumable-media==1.1.0
 googleapis-common-protos==1.52.0
 grpc-google-iam-v1==0.12.3
 grpcio==1.32.0
