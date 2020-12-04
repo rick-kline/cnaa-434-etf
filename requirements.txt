@@ -17,3 +17,4 @@ pytest-cov==2.10.1
 requests==2.24.0
 rsa==4.6
 WTForms==2.3.3
+pylint==2.6.0
